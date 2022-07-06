@@ -1,6 +1,6 @@
 # R_learning_archive
 
-![chart](./photos/chart.png)
+![chart](./docs/images/chart.png)
 
 Welcome to my 2nd repository! I am a student from the University of Auckland who is learning `R`, `Markdown` and `sql` language now.
 
