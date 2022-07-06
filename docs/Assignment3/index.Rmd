@@ -1,0 +1,214 @@
+---
+title: "Assignment 3"
+subtitle: "STATS 220 Semester One 2022"
+author: "Pok Man Chung"
+output: html_document
+---
+
+```{css}
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins:wght@700&display=swap');
+
+body {
+      background-color: #F5FFDC;
+}
+
+h1 {
+    background-color: #32612D;
+    color: #FFFFFF;
+    font-family: 'Poppins', sans-serif;
+    padding: 20px;
+}
+
+h2 {
+    background-color: #32612D;
+    color: #FFFFFF;
+    font-family: 'Poppins', sans-serif;
+    padding: 20px;
+}
+
+h3 {
+    background-color: #32612D;
+    color: #FFFFFF;
+    font-family: 'Poppins', sans-serif;
+    padding: 10px;
+}
+
+h4 {
+    background-color: #32612D;
+    color: #FFFFFF;
+    font-family: 'Poppins', sans-serif;
+    padding: 10px;
+}
+
+p {
+    background-color: #D6FFBF;
+    color: #000000;
+    font-family: 'Open Sans', sans-serif;
+    padding: 10px;
+}
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, error = FALSE)
+library(tidyverse)
+library(jsonlite)
+library(RSQLite)
+library(magick)
+db_connection <- dbConnect(SQLite(), "boardgamegeek.sqlite")
+```
+
+## Introduction
+
+I would like to choose the word dinosaur to select books and board games from the Google Books API and boardgamegeek.com.
+
+I have chosen this word because I am fascinated by different dinosaur species. As dinosaurs became extinct many years ago, which provides opportunities for writers or game makers to be creative with dinosaurs. In addition, people often associate dinosaur with excitement and power. Therefore, I guess many book writers and game makers will use dinosaurs as the main theme of books or board games. Thus, I believe that there would be sufficient number of results from both Google Books API and boardgamegeek.com.
+
+Before introducing the similarity and difference in book and board game names, I think, with the word dinosaur, the books from Google Books can be mainly classified into 2 groups: fiction and non-fiction.
+
+I think there will be similarity in fictional book and board game names with the word dinosaur. It is because both fictional books and board game would like to bring excitement and enjoyment to their readers and players. Therefore, I think the name of both books and board games will contain some adventurous elements, like using the word “escape”, “catch”, “slay”, etc.
+
+However, for non-fiction books, the names of which will be more informative and formal.
+
+## Book data
+
+### Sourcing data from the Google Books API
+
+```{r}
+query <- "https://www.googleapis.com/books/v1/volumes?q=intitle:%22dinosaur%22&startIndex=0&maxResults=40"
+
+response <- fromJSON(query, flatten = TRUE)
+
+book_data <- response$items
+
+book_data_title_publish_date <- select(book_data,
+                                       volumeInfo.title,
+                                       volumeInfo.publishedDate)
+
+knitr::kable(book_data_title_publish_date)
+```
+
+### Creating a new data frame
+
+```{r}
+
+mini_data <- tibble(book_title = book_data$volumeInfo.title,
+                    page_count = book_data$volumeInfo.pageCount,
+                    published_date = book_data$volumeInfo.publishedDate,
+                    publisher = book_data$volumeInfo.publisher,
+                    book_language = book_data$volumeInfo.language,
+                    viewability = book_data$accessInfo.viewability)
+
+mini_data <- arrange(mini_data, page_count)
+
+knitr::kable(mini_data)
+```
+
+### Mutating new variables
+
+```{r}
+mutated_data <- mutate(mini_data,
+                       year_published = str_sub(published_date, 1, 4) %>% as.numeric(),
+                       book_title_num_word = str_count(book_title, " ") + 1,
+                       totally_not_viewable = ifelse(viewability == "NO_PAGES",
+                                                     "Yes",
+                                                     "No")
+                       )
+
+knitr::kable(mutated_data)
+```
+
+### Producing summaries
+
+```{r}
+summarised_data <- summarise(group_by(mutated_data, totally_not_viewable), number_of_books = n())
+
+total_number_of_books <- nrow(book_data)
+not_viewable <- summarised_data$number_of_books[1]
+viewable <- summarised_data$number_of_books[2]
+
+knitr::kable(summarised_data)
+```
+
+From the table, we see that out of the 40 books from the data frame `summarised_data`, Google Books users are not able to view any content of `r not_viewable` books, which account for approximately `r round(not_viewable / total_number_of_books * 100)`%. The remaining `r viewable` books are either partially or fully accessible by Google Books users.
+
+## Board game data
+
+### Familiarising yourself with the fields/columns of the `boardgames` table
+
+The following shows the first 25 fields in the `boardgames` table.
+```{r}
+dbListFields(db_connection, "boardgames")[c(1:25)]
+```
+
+### Writing a SQL query
+
+```{sql connection = db_connection, output.var = "board_game_data"}
+SELECT `details.name` AS `board_game_name`, `details.yearpublished` AS `publishing_year`, `details.playingtime` AS `game_playing_time`, `details.maxplayers` AS `max_number_of_players`, 2022 - `details.yearpublished` AS `years_since_published`
+  FROM boardgames
+  WHERE (`board_game_name` LIKE 'dinosaur'
+    OR `board_game_name` LIKE 'dinosaur %'
+    OR `board_game_name` LIKE '% dinosaur'
+    OR `board_game_name` LIKE '% dinosaur %')
+    AND `max_number_of_players` < 8
+  ORDER BY `publishing_year` DESC
+  LIMIT 40
+```
+
+```{r}
+knitr::kable(board_game_data)
+
+
+```
+
+## Your choice!
+
+```{r test}
+board_game_data <- mutate(board_game_data,
+                          game_duratoin = ifelse(game_playing_time > 60,
+                                               "Longer than 1 hour",
+                                               "Less than or equal to 1 hour")
+                          )
+
+
+plot_figure <- ggplot(data = board_game_data) + 
+  geom_bar(aes(x = max_number_of_players, fill = game_duratoin)) + 
+  labs(title = "Number of Board Games according to the Maximum Number of Players",
+       x = "Maximum Number of Players")
+
+ggsave("./plot.png",
+       plot_figure,
+       width = 2000,
+       height = 2000,
+       units = "px",
+       device = "png")
+
+plot_figure <- image_read("./plot.png")
+
+plot_figure <- image_scale(plot_figure,
+                           geometry = "690")
+
+plot_figure <- image_extent(plot_figure,
+                            geometry = "700x700",
+                            color = "#8B0000")
+
+plot_figure
+```
+
+I have created a bar chart showing the number of board games according to their maximum number of players. Moreover, in each bar, I further filled the bar by the gaming duration.
+
+It shows that most of the board games from the data frame `board_game_data` have a maximum number of 4 players. Besides, it is interesting that only `r sum(board_game_data$game_duratoin == "Longer than 1 hour")` board games have gaming time more than 1 hour. In another word, only `r round(sum(board_game_data$game_duratoin == "Longer than 1 hour") / nrow(board_game_data) * 100)`% of board games from the data frame `board_game_data` have a game playing time longer than 1 hour.
+
+Lastly, I also created a border around the plot by using `magick` package, in order to make the plot more attractive.
+
+## Learning reflection
+
+After attending lessons on Module 3, I understand that it is extremely important to know how to extract data from a database so that we can make of those extracted data to create new useful variables. Even though we have a database, if we do not know how to extract data from it, we cannot do any analysis on data. However, after learning through Module 3, all these obstacle could be solved since I learnt how to use filtering and conditioning to help me extract useful data and create new variables for my data tables.
+
+Now, I am quite curious about data scraping. There are tons of information on the internet. However, if we want to obtain large amount of data from a website manually, it will cost us large amount of time. The whole process thus become very inefficient and ineffective. Using data scraping techniques, like writing some codes, we will be able to get data from websites easier through automation. We might need to spend considerable amount of time in writing codes, but using data scraping save us from spending time and cost in the long run.
+
+### Last update
+19/4/2022
+
+## Back to Home Page
+[Click here](https://220pmc.github.io/portfolio/)
