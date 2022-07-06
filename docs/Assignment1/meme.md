@@ -3,7 +3,7 @@
 
 ## Meme
 This is my newly created meme. Have you ever had a similar experience?
-![my_meme](/images/my_meme.png)
+![my_meme](./images/my_meme.png)
 ## Used R and {magick} package code
 ```r
 library(magick)
@@ -84,8 +84,8 @@ Below is an illustration of a typical 4-square meme:
 
 However, I believe that it will be boring to see lots of 4-square memes. Thus, I added a frame around the images and annotations by calling image_scale and image_extent function 4 times. I think the meme now is more interesting and eye-catching.  
 The two original images are border-free.  
-![](/images/forecast.png)
-![](/images/reality.png)  
+![](./images/forecast.png)
+![](./images/reality.png)  
 
 File details the meme image:
 * Format: png
