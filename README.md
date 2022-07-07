@@ -1,4 +1,4 @@
-# R_learning_archive
+# My Portfolio
 
 ![chart](./docs/images/chart.png)
 
