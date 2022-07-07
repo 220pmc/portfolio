@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Pok Man Chung" />
+
+<meta name="date" content="2022-04-03" />
+
+<title>Assignment 2</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">My Portfolio</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="./assignment1a.html">Assignment 1 (Part A)</a>
+</li>
+<li>
+  <a href="./assignment1b.html">Assignment 1 (Part B)</a>
+</li>
+<li>
+  <a href="./assignment2.html">Assignment 2</a>
+</li>
+<li>
+  <a href="./assignment3.html">Assignment 3</a>
+</li>
+<li>
+  <a href="./assignment4.html">Assignment 4</a>
+</li>
+<li>
+  <a href="./assignment5.html">Assignment 5</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Assignment 2</h1>
+<h3 class="subtitle">STATS 220 Semester One 2022</h3>
+<h4 class="author">Pok Man Chung</h4>
+<h4 class="date">2022-04-03</h4>
+
+</div>
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Nowadays, it is quite convenient for people to access music thanks to
+technology advancement. Several online streaming platforms have started
+providing music services to their users since 2000s.</p>
+<p>As a result, I want to investigate whether some older technologies
+including Vinyls, cassettes and TV programmes have become obsolete or
+not, and which will be the most popular way for people to access music.
+Besides, I would like to explorer whether their most preferred way of
+listening to music can provide them with sufficient music resources.</p>
+<p>Furthermore, for habits perspective, I would like to know the
+duration for people to listen to music.</p>
+</div>
+<div id="links-to-form-and-data" class="section level2">
+<h2>Links to form and data</h2>
+<p><a href="https://forms.gle/Bje4L2mnwWRj5jdc7">Please click here for
+the original questionnaire.</a></p>
+</div>
+<div id="analytics" class="section level2">
+<h2>Analytics</h2>
+<p>Below is the first 5 row of the data frame.</p>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="3%" />
+<col width="1%" />
+<col width="4%" />
+<col width="8%" />
+<col width="13%" />
+<col width="33%" />
+<col width="15%" />
+<col width="9%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">time</th>
+<th align="left">gender</th>
+<th align="right">age</th>
+<th align="left">likeness</th>
+<th align="right">average_duration</th>
+<th align="left">preferred_way</th>
+<th align="left">used_way</th>
+<th align="left">genre</th>
+<th align="left">sufficient_resource</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">03/04/2022 13:36:04</td>
+<td align="left">Male</td>
+<td align="right">21</td>
+<td align="left">Yes</td>
+<td align="right">4</td>
+<td align="left">Online streaming platforms</td>
+<td align="left">Online streaming platforms</td>
+<td align="left">Classical, Pop, Rock ’n Roll</td>
+<td align="left">Yes</td>
+</tr>
+<tr class="even">
+<td align="left">03/04/2022 13:37:03</td>
+<td align="left">Male</td>
+<td align="right">27</td>
+<td align="left">Yes</td>
+<td align="right">6</td>
+<td align="left">Compact Discs (CD)</td>
+<td align="left">Compact Discs (CD), Online streaming platforms</td>
+<td align="left">Folk, Pop</td>
+<td align="left">Yes</td>
+</tr>
+<tr class="odd">
+<td align="left">03/04/2022 13:40:19</td>
+<td align="left">Male</td>
+<td align="right">19</td>
+<td align="left">Yes</td>
+<td align="right">10</td>
+<td align="left">Online streaming platforms</td>
+<td align="left">Radio programmes, Online streaming platforms,
+Television programmes</td>
+<td align="left">Heavy metal, Pop, Rock ’n Roll</td>
+<td align="left">Yes</td>
+</tr>
+<tr class="even">
+<td align="left">03/04/2022 13:40:25</td>
+<td align="left">Female</td>
+<td align="right">23</td>
+<td align="left">Yes</td>
+<td align="right">13</td>
+<td align="left">Online streaming platforms</td>
+<td align="left">Online streaming platforms</td>
+<td align="left">Pop, Rock ’n Roll</td>
+<td align="left">Yes</td>
+</tr>
+<tr class="odd">
+<td align="left">03/04/2022 13:41:09</td>
+<td align="left">Female</td>
+<td align="right">62</td>
+<td align="left">Yes</td>
+<td align="right">14</td>
+<td align="left">Radio programmes</td>
+<td align="left">Live music performance, Radio programmes</td>
+<td align="left">Folk</td>
+<td align="left">Yes</td>
+</tr>
+</tbody>
+</table>
+<p><em>Results</em><br />
+The total number of respondents in this study is <strong>20</strong>
+.</p>
+<p><img src="assignment2_files/figure-html/gender-1.png" width="672" /></p>
+<p>In this study, there are <strong>7</strong> female and
+<strong>13</strong> male respondents.</p>
+<p><img src="assignment2_files/figure-html/age-1.png" width="672" /></p>
+<p>In this study, <strong>18</strong> of the respondents are aged
+between 18 and 29. There are <strong>2</strong> respondents at their
+60s.</p>
+<p><img src="assignment2_files/figure-html/likeness-1.png" width="672" /></p>
+<p><strong>19</strong> out of 20 respondents like to listen to music at
+their spare time and only <strong>1</strong> of them does not.</p>
+<p><img src="assignment2_files/figure-html/average_duration-1.png" width="672" /></p>
+<p>The number of hours that our respondents listening to music per week
+on average ranged between <strong>1</strong> to <strong>21</strong>,
+with a mean of approximately <strong>8.6</strong> hours.</p>
+<p><img src="assignment2_files/figure-html/preferred_way-1.png" width="672" /></p>
+<p>We found that online streaming platforms is the highest most
+preferred way for people to listen to music and there are
+<strong>12</strong> people who chose this option, which accounts for 60%
+of all respondents. The 2nd highest most preferred way is television
+programmes, and there are <strong>3</strong> respondents who chose this
+option. None of the options get <strong>0</strong> counts.</p>
+<p><img src="assignment2_files/figure-html/used_way-1.png" width="672" /></p>
+<p>We found that <strong>15</strong> of our respondents used online
+streaming platforms to listen to music in previous month, which accounts
+for 75% of the whole sample. It is followed by television programmes,
+radio programmes and Compact Discs, with <strong>6</strong> (30%),
+<strong>4</strong> (20%) and <strong>3</strong> (15%) counts
+respectively.</p>
+<p><img src="assignment2_files/figure-html/genre-1.png" width="672" /></p>
+<p>The most popular music genre that the respondents like to listen to
+is Pop, which has <strong>12</strong> counts in total. After that, both
+Folk and Classical are the second highest, each of which consist of
+<strong>7</strong> counts. Punk is the least popular music genre among
+our respondents, there is only <strong>1</strong> count in total.</p>
+<p><img src="assignment2_files/figure-html/sufficient_resource-1.png" width="672" /></p>
+<p><strong>13</strong> of our respondents believe that their most
+preferred way of accessing music can provide them with sufficient
+resources of their favourite music genres. <strong>7</strong> of the
+respondents disagree that they are able to find sufficient resources of
+the genres they love.</p>
+<p><em>Comments</em></p>
+<p>From this study, I found that a very high percentage
+(<strong>95</strong>%) of respondents would like to listen to music
+during their spare time. However, the average weekly listening hours of
+the respondents is only <strong>8.6</strong> hours. It shows that our
+respondents spend less than half and an hour per day on average on music
+listening per day. However, we do notice that there are people who spend
+20 hours per week on music.</p>
+<p>Online streaming platform has become the dominant way for people to
+listen to music, in terms of both preference and the actual way that our
+respondents adopted. As mentioned above, <strong>75%</strong> of our
+respondents chose it to be their most preferred way. However, we still
+need to conduct further studies to investigate the reasons behind
+that.</p>
+<p>Nevertheless, the is still a number of respondents who use
+television, radio and CDs to listen to music. 1 of our respondents is
+still using Vinyl to listen to music, which shows that older
+technologies have not been phased out completely, though their
+popularity are much lower than that of online steaming platforms.</p>
+<p>Regarding genre, we figure out that pop, folk and classical are the
+top 3 most popular music genre for the respondents. However, more than a
+third of our respondents believe that they cannot find enough resources
+of the music genres they love in their most preferred way of accessing
+music.</p>
+<p>However, due to the sample size limitation and the way that we chose
+the sample, many of our respondents are at their 20s. It means that our
+data cannot fully reflect the real music preferences and habits of
+people around the world. we should conduct more studies to further
+investigate this topic.</p>
+</div>
+<div id="learning-reflection" class="section level2">
+<h2>Learning reflection</h2>
+<p>After having lessons on Module 2, I understand we need to pay extra
+attention to design the survey form. It is because even dynamic
+reporting system can help us to obtain up-to-date data and allow us to
+generate result instantly with the help of codes, if our form is poorly
+designed, we still need to spend a lot of time in data cleaning, meaning
+that we cannot enjoy the advantages brought by the dynamic reporting
+system.</p>
+<p>Besides, I found that regex is a great tool, especially in dealing
+with numerical data. With the help of regex, I did not need to do data
+cleaning before analysing the data in R.</p>
+<p>In this Assignment, I have reused two techniques that I learnt in
+Assignment 1. Firstly, I introduced some css codes here to change the
+font and colour of this report. This time, I chose orange to be the
+theme colour, aiming to bring the feeling of warmth to readers.
+Secondly, I used bold and italic formatting in the Analytics section to
+highlight some important values and figures.</p>
+<p>Now, I am quite curious about machine learning. In today’s world, we
+know that the sizes of data are getting bigger and bigger. Without the
+aid of machine learning technology, we might need to spend a lot of time
+in order to analyse the data and make appropriate predictions. But with
+machine learning technology, we can spend limited amount of time to
+<em>train</em> the machine. After that, the machine can produce results
+in a very short period of time even with different new input. Therefore,
+I believe that machine learning technology is worth to learn and
+discover, as it can improve both efficiency and effectiveness if we make
+good use of it.</p>
+<div id="last-update" class="section level3">
+<h3>Last update</h3>
+<p>3/4/2022</p>
+</div>
+</div>
+<div id="back-to-home-page" class="section level2">
+<h2>Back to Home Page</h2>
+<p><a href="https://220pmc.github.io/portfolio/">Back</a></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
