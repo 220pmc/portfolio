@@ -2,7 +2,7 @@
 
 ![chart](./docs/images/chart.png)
 
-Welcome to my 2nd repository! I am Pok, a student from the University of Auckland who is learning `R`, `Markdown` and `sql` language now.
+Welcome to my 2nd repository! I am Pok, a student from the University of Auckland who is learning `R`, `Markdown` and `SQL` language now.
 
 After finishing the first half of my 2nd year school study, I would like to create this repository to conclude what I have learnt in the last semster.
 
